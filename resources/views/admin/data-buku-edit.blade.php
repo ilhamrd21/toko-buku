@@ -6,62 +6,46 @@
 <div class="container mx-auto px-6 py-8">
     <h2 class="text-2xl font-bold mb-6">Edit Buku</h2>
 
-    {{-- tampilkan error validasi kalau ada --}}
-    @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <ul class="list-disc pl-6">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('admin.data-buku.update', $buku->id) }}" method="POST" enctype="multipart/form-data"
-          class="bg-white p-6 rounded-lg shadow-lg">
+    <form action="{{ route('admin.data-buku.update', $buku->id) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg">
         @csrf
         @method('PUT')
 
         <div class="mb-4">
             <label class="block text-gray-700">Judul Buku</label>
-            <input type="text" name="judul_buku" value="{{ old('judul_buku', $buku->judul_buku) }}" 
-                   class="w-full border rounded px-3 py-2" required>
+            <input type="text" name="judul_buku" value="{{ $buku->judul_buku }}" class="w-full border rounded px-3 py-2" required>
         </div>
 
         <div class="mb-4">
             <label class="block text-gray-700">Penerbit</label>
-            <input type="text" name="penerbit" value="{{ old('penerbit', $buku->penerbit) }}" 
-                   class="w-full border rounded px-3 py-2" required>
+            <input type="text" name="penerbit" value="{{ $buku->penerbit }}" class="w-full border rounded px-3 py-2" required>
         </div>
 
         <div class="mb-4">
             <label class="block text-gray-700">Pengarang</label>
-            <input type="text" name="pengarang" value="{{ old('pengarang', $buku->pengarang) }}" 
-                   class="w-full border rounded px-3 py-2" required>
+            <input type="text" name="pengarang" value="{{ $buku->pengarang }}" class="w-full border rounded px-3 py-2" required>
         </div>
 
         <div class="mb-4">
             <label class="block text-gray-700">Tahun Terbit</label>
-            <input type="number" name="tahun_terbit" value="{{ old('tahun_terbit', $buku->tahun_terbit) }}" 
-                   class="w-full border rounded px-3 py-2" required>
+            <input type="number" name="tahun_terbit" value="{{ $buku->tahun_terbit }}" class="w-full border rounded px-3 py-2" required>
         </div>
 
         <div class="mb-4">
             <label class="block text-gray-700">Kategori</label>
-            <select name="kategori" class="w-full border rounded px-3 py-2" required>
+            <select name="kategori_id" class="w-full border rounded px-3 py-2" required>
                 <option value="">-- Pilih Kategori --</option>
-                @foreach (['Fiksi','Non-Fiksi','Cerita Anak','Pendidikan','Sejarah','Novel','Biografi','Drama','Komedi','Horor','Thriller','Fantasi','Misteri','Romance','Sci-Fi','Fantasy','Adventure'] as $kategori)
-                    <option value="{{ $kategori }}" {{ $buku->kategori == $kategori ? 'selected' : '' }}>
-                        {{ $kategori }}
+                @foreach($kategori as $kat)
+                    <option value="{{ $kat->id }}" {{ $buku->kategori_id == $kat->id ? 'selected' : '' }}>
+                        {{ $kat->nama }} ({{ $kat->jenis }})
                     </option>
                 @endforeach
             </select>
         </div>
 
         <div class="mb-6">
-            <label class="block text-gray-700">Cover Buku</label>
-            @if ($buku->cover_buku)
-                <img src="{{ asset('storage/'.$buku->cover_buku) }}" width="100" class="mb-2 rounded">
+            <label class="block text-gray-700">Cover Buku (opsional)</label>
+            @if($buku->cover_buku)
+                <img src="{{ asset('storage/' . $buku->cover_buku) }}" alt="Cover" class="h-20 mb-2 rounded">
             @endif
             <input type="file" name="cover_buku" class="w-full border rounded px-3 py-2">
         </div>

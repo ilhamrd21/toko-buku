@@ -37,7 +37,9 @@
                     <td class="px-4 py-2 border">{{ $item->penerbit }}</td>
                     <td class="px-4 py-2 border">{{ $item->pengarang }}</td>
                     <td class="px-4 py-2 border">{{ $item->tahun_terbit }}</td>
-                    <td class="px-4 py-2 border">{{ $item->kategori }}</td>
+                    <td class="px-4 py-2 border">
+                        {{ $item->kategori ? $item->kategori->nama . ' (' . $item->kategori->jenis . ')' : '-' }}
+                    </td>
                     <td class="px-4 py-2 border">
                         @if($item->cover_buku)
                             <img src="{{ asset('storage/' . $item->cover_buku) }}" alt="Cover" class="h-16 rounded">
@@ -47,50 +49,19 @@
                     </td>
                     <td class="px-4 py-2 border">
                         <div class="flex gap-2">
-                            {{-- Tombol Edit --}}
                             <a href="{{ route('admin.data-buku.edit', $item->id) }}" 
                                class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
                                 Edit
                             </a>
-
-                            {{-- Tombol Hapus pakai Modal --}}
-                            <div x-data="{ open: false }">
-                                <button @click="open = true" 
-                                        class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                            <form action="{{ route('admin.data-buku.destroy', $item->id) }}" 
+                                  method="POST" 
+                                  onsubmit="return confirm('Yakin hapus buku ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
                                     Hapus
                                 </button>
-
-                                <!-- Modal -->
-                                <div x-show="open" 
-                                     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">
-                                    <div class="bg-white p-6 rounded-lg shadow-lg w-96 relative">
-                                        <!-- Tombol Close -->
-                                        <button @click="open = false" 
-                                                class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">✖</button>
-
-                                        <!-- Isi Modal -->
-                                        <h2 class="text-lg font-bold mb-4">Konfirmasi Hapus</h2>
-                                        <p class="text-sm text-gray-600 mb-4">
-                                            Apakah kamu yakin ingin menghapus buku <strong>{{ $item->judul_buku }}</strong>?
-                                        </p>
-
-                                        <form action="{{ route('admin.data-buku.destroy', $item->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <div class="flex justify-end gap-2">
-                                                <button type="button" @click="open = false" 
-                                                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-                                                    Batal
-                                                </button>
-                                                <button type="submit" 
-                                                        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-                                                    Hapus
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </td>
                 </tr>

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\KategoriController; // ✅ tambahin
 
 // === AUTH ROUTES ===
 Route::get('/', [AuthController::class, 'login'])->name('login');
@@ -20,6 +21,9 @@ Route::middleware(['auth', 'role:admin'])
 
         // CRUD Data Buku
         Route::resource('data-buku', BukuController::class);
+
+        // ✅ CRUD Kategori
+        Route::resource('kategori', KategoriController::class);
     });
 
 // === OWNER ROUTES ===

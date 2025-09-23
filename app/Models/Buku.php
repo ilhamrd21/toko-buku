@@ -16,9 +16,14 @@ class Buku extends Model
         'judul_buku',
         'penerbit',
         'pengarang',
-        'kategori',   
+        'kategori_id',
         'tahun_terbit',
         'cover_buku',
     ];
 
+    // Relasi ke kategori
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'kategori_id');
+    }
 }

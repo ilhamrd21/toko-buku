@@ -31,25 +31,11 @@
 
         <div class="mb-4">
             <label class="block text-gray-700">Kategori</label>
-            <select name="kategori" class="w-full border rounded px-3 py-2" required>
+            <select name="kategori_id" class="w-full border rounded px-3 py-2" required>
                 <option value="">-- Pilih Kategori --</option>
-                <option value="Fiksi">Fiksi</option>
-                <option value="Non-Fiksi">Non-Fiksi</option>
-                <option value="Cerita Anak">Cerita Anak</option>
-                <option value="Pendidikan">Pendidikan</option>
-                <option value="Sejarah">Sejarah</option>
-                <option value="Novel">Novel</option>
-                <option value="Biografi">Biografi</option>
-                <option value="Drama">Drama</option>
-                <option value="Komedi">Komedi</option>
-                <option value="Horor">Horor</option>
-                <option value="Thriller">Thriller</option>
-                <option value="Fantasi">Fantasi</option>
-                <option value="Misteri">Misteri</option>
-                <option value="Romance">Romance</option>
-                <option value="Sci-Fi">Sci-Fi</option>
-                <option value="Fantasy">Fantasy</option>
-                <option value="Adventure">Adventure</option>
+                @foreach($kategori as $kat)
+                    <option value="{{ $kat->id }}">{{ $kat->nama }} ({{ $kat->jenis }})</option>
+                @endforeach
             </select>
         </div>
 

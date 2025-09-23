@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buku;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 
 class BukuController extends Controller
@@ -10,14 +11,15 @@ class BukuController extends Controller
     // Tampilkan semua data buku
     public function index()
     {
-        $buku = Buku::all();
+        $buku = Buku::with('kategori')->get(); // ✅ eager load kategori
         return view('admin.data-buku', compact('buku'));
     }
 
     // Form tambah buku
     public function create()
     {
-        return view('admin.data-buku-create');
+        $kategori = Kategori::all();
+        return view('admin.data-buku-create', compact('kategori'));
     }
 
     // Simpan buku baru
@@ -28,14 +30,12 @@ class BukuController extends Controller
             'penerbit'     => 'required|string|max:255',
             'pengarang'    => 'required|string|max:255',
             'tahun_terbit' => 'required|integer',
-            'kategori'     => 'required|string', 
+            'kategori_id'  => 'required|exists:kategoris,id',
             'cover_buku'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Generate kode buku otomatis
         $kode_buku = 'BK-' . strtoupper(uniqid());
 
-        // Upload cover (jika ada)
         $coverPath = null;
         if ($request->hasFile('cover_buku')) {
             $coverPath = $request->file('cover_buku')->store('covers', 'public');
@@ -47,7 +47,7 @@ class BukuController extends Controller
             'penerbit'     => $request->penerbit,
             'pengarang'    => $request->pengarang,
             'tahun_terbit' => $request->tahun_terbit,
-            'kategori'     => $request->kategori,
+            'kategori_id'  => $request->kategori_id,
             'cover_buku'   => $coverPath,
         ]);
 
@@ -59,7 +59,8 @@ class BukuController extends Controller
     public function edit($id)
     {
         $buku = Buku::findOrFail($id);
-        return view('admin.data-buku-edit', compact('buku'));
+        $kategori = Kategori::all();
+        return view('admin.data-buku-edit', compact('buku', 'kategori'));
     }
 
     // Update data buku
@@ -70,13 +71,12 @@ class BukuController extends Controller
             'penerbit'     => 'required|string|max:255',
             'pengarang'    => 'required|string|max:255',
             'tahun_terbit' => 'required|integer',
-            'kategori'     => 'required|string',
+            'kategori_id'  => 'required|exists:kategoris,id',
             'cover_buku'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $buku = Buku::findOrFail($id);
 
-        // Upload cover baru kalau ada
         if ($request->hasFile('cover_buku')) {
             $coverPath = $request->file('cover_buku')->store('covers', 'public');
             $buku->cover_buku = $coverPath;
@@ -87,7 +87,7 @@ class BukuController extends Controller
             'penerbit'     => $request->penerbit,
             'pengarang'    => $request->pengarang,
             'tahun_terbit' => $request->tahun_terbit,
-            'kategori'     => $request->kategori,
+            'kategori_id'  => $request->kategori_id,
             'cover_buku'   => $buku->cover_buku,
         ]);
 

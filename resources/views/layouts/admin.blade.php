@@ -34,6 +34,13 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.kategori.index') }}" 
+                           class="flex items-center px-4 py-2 rounded-lg hover:bg-blue-100 transition">
+                            <span class="text-blue-600">📂</span>
+                            <span class="ml-3">Kategori</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="#" 
                            class="flex items-center px-4 py-2 rounded-lg hover:bg-blue-100 transition">
                             <span class="text-blue-600">👥</span>
@@ -59,7 +66,8 @@
 
                 <!-- Modal Logout -->
                 <div x-show="open" 
-                     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">
+                     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50"
+                     x-cloak>
                     <div class="bg-white p-6 rounded-lg shadow-lg w-96 relative">
                         <!-- Tombol Close -->
                         <button @click="open = false" 
