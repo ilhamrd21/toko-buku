@@ -8,21 +8,29 @@ use Illuminate\Http\Request;
 
 class BukuController extends Controller
 {
-    // Tampilkan semua data buku
+    /**
+     * Tampilkan semua data buku
+     */
     public function index()
     {
-        $buku = Buku::with('kategori')->get(); // ✅ eager load kategori
+        // Eager load kategori biar query lebih efisien
+        $buku = Buku::with('kategori')->get();
+
         return view('admin.data-buku', compact('buku'));
     }
 
-    // Form tambah buku
+    /**
+     * Form tambah buku
+     */
     public function create()
     {
         $kategori = Kategori::all();
         return view('admin.data-buku-create', compact('kategori'));
     }
 
-    // Simpan buku baru
+    /**
+     * Simpan buku baru
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -34,8 +42,10 @@ class BukuController extends Controller
             'cover_buku'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
+        // Generate kode buku unik
         $kode_buku = 'BK-' . strtoupper(uniqid());
 
+        // Upload cover kalau ada
         $coverPath = null;
         if ($request->hasFile('cover_buku')) {
             $coverPath = $request->file('cover_buku')->store('covers', 'public');
@@ -55,15 +65,29 @@ class BukuController extends Controller
                          ->with('success', 'Buku berhasil ditambahkan!');
     }
 
-    // Form edit buku
+    /**
+     * Tampilkan detail buku
+     */
+    public function show($id)
+    {
+        $buku = Buku::with('kategori')->findOrFail($id);
+        return view('admin.data-buku-show', compact('buku'));
+    }
+
+    /**
+     * Form edit buku
+     */
     public function edit($id)
     {
         $buku = Buku::findOrFail($id);
         $kategori = Kategori::all();
+
         return view('admin.data-buku-edit', compact('buku', 'kategori'));
     }
 
-    // Update data buku
+    /**
+     * Update data buku
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -77,6 +101,7 @@ class BukuController extends Controller
 
         $buku = Buku::findOrFail($id);
 
+        // Upload cover baru kalau ada
         if ($request->hasFile('cover_buku')) {
             $coverPath = $request->file('cover_buku')->store('covers', 'public');
             $buku->cover_buku = $coverPath;
@@ -95,7 +120,9 @@ class BukuController extends Controller
                          ->with('success', 'Data buku berhasil diperbarui!');
     }
 
-    // Hapus buku
+    /**
+     * Hapus buku
+     */
     public function destroy($id)
     {
         $buku = Buku::findOrFail($id);
